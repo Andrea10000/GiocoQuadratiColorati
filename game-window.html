@@ -1,0 +1,134 @@
+<html>
+<head>
+  <style>
+    html,
+body {
+  margin: 0;
+}
+
+.container {            
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+}
+
+.clicked {
+  border: 3px solid white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.leaderboard1 {
+  border: 5px solid rgb(0, 0, 0);
+  color: black;
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  font-size: xx-large;
+  font-family: Georgia;
+}
+
+
+  </style>
+</head>
+<body onload="gameStart()">
+  <div class="leaderboard1">
+    <div id="points">Points: 0</div>
+    <div id="timer">Time: 60</div>
+</div>
+<div class="container" style="background-color: rgb(69, 68, 68);;
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-size: 100%;">
+<script>
+
+//Array di colori complementari
+var colors = ["red", "green", "blue", "yellow", "orange", "purple", "pink", "brown", "gray","lime"];
+
+//Array vuoto per memorizzare i quadrati selezionati
+var selectedBoxes = [];
+
+//Variabile per tenere traccia dei punti
+var points = 0;
+
+
+
+
+//Funzione per generare quadrati casuali
+function generateBoxes() {
+  for (var i = 0; i < 20; i++) {
+    var randomColor = colors[i%10]; 
+    var box = document.createElement("div");
+    box.classList.add("box");
+    box.style.backgroundColor = randomColor;
+    box.style.margin=Math.random()*256+1;
+   
+    box.addEventListener("click", handleClick);
+    document.querySelector(".container").appendChild(box);
+  }
+}
+
+
+//Funzione per gestire i click sui quadrati
+function handleClick(e) {
+  var clickedBox = e.target;
+  clickedBox.classList.add("clicked");
+  selectedBoxes.push(clickedBox);       
+  //Se sono stati selezionati due quadrati, controllare se sono uguali
+  if (selectedBoxes.length === 2) {
+    if ((selectedBoxes[0].style.backgroundColor === selectedBoxes[1].style.backgroundColor) &&  (selectedBoxes[0].style.margin != selectedBoxes[1].style.margin)) {
+      console.log("1");
+      points++;
+      selectedBoxes[0].style.display = "none";
+      selectedBoxes[1].style.display = "none";
+      selectedBoxes = [];
+      document.querySelector("#points").innerHTML = "Points: " + points;
+      return points;
+
+    } else {
+      setTimeout(function() {
+        selectedBoxes[0].classList.remove("clicked");
+        selectedBoxes[1].classList.remove("clicked");
+        selectedBoxes = [];
+      }, 1000);
+    }
+  }
+}
+
+
+function gameStart(handleClick)
+{
+  generateBoxes();
+
+  var time=60;
+  setInterval(function () {document.querySelector("#timer").innerHTML = "Time: " + time--;
+  if(time<0||points>9)
+  {
+    if(time!=0 && time!=1)
+    {
+      points=time*points; //moltiplicatore
+      time=1;
+    }
+    clearInterval();
+    document.querySelector("#timer").innerHTML = "Per rigiocare premi F5";
+    if(points<0)
+    {
+      points=points*-1;
+    } 
+    document.querySelector("#points").innerHTML = "Final score : "+points;
+  }
+  
+}, 1000);
+}
+
+
+</script>
+</div>
+
+</body>
+</html>
